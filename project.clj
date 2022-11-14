@@ -1,4 +1,4 @@
-(defproject org.clojure.clr/core.cache "1.0.225
+(defproject org.clojure.clr/core.cache "1.0.225"
   :description "A port of core.cache to ClojureCLR"
   :url "https://github.com/clojure/clr.core.cache"
   :license {:name "Eclipse Public License"
