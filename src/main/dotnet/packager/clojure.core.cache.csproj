@@ -17,11 +17,16 @@
 		<RepositoryUrl>https://github.com/clojure/clr.core.cache</RepositoryUrl>
 		<Company>ClojureCLR contributors</Company>
 		<PackageTags>Clojure;ClojureCLR</PackageTags>
-		<Version>1.0.225</Version>
+		<Version>1.0.226</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<EmbeddedResource CopyToOutputDirectory="Never" Include="..\..\clojure\clojure\core\**\*" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="clojure.data.priority-map" Version="1.1.0" />
+	</ItemGroup>
+
 
 </Project>
