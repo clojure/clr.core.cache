@@ -80,11 +80,12 @@
                 not-found#))
 
        System.Collections.IEnumerable                              ;;;java.lang.Iterable
-       (GetEnumerator [_#]                                         ;;;(iterator [_#]
-          (.GetEnumerator ~base-field))                            ;;;  (.iterator ~base-field))
+       (System.Collections.IEnumerable.GetEnumerator [_#]                                         ;;;(iterator [_#]
+          (let [base# ^System.Collections.IEnumerable ~base-field]
+		    (.GetEnumerator ^System.Collections.IEnumerable base#)))                            ;;;  (.iterator ~base-field))
 
        clojure.lang.IPersistentMap
-       (assoc [this# k# v#]
+       (clojure.lang.IPersistentMap.assoc [this# k# v#]
          (miss this# k# v#))
        (without [this# k#]
          (evict this# k#))
@@ -95,13 +96,16 @@
        (entryAt [this# k#]
          (when (has? this# k#)
            (clojure.lang.MapEntry. k# (lookup this# k#))))
-
+	   (clojure.lang.Associative.assoc [this# k# v#]                                     ;;; had to add
+         (miss this# k# v#))
+		 
+		 
        clojure.lang.Counted
        (count [this#]
          (count ~base-field))
 
        clojure.lang.IPersistentCollection
-       (cons [this# elem#]
+       (clojure.lang.IPersistentCollection.cons [this# elem#]
          (seed this# (conj ~base-field elem#)))
        (empty [this#]
          (seed this# (empty ~base-field)))
@@ -654,6 +658,6 @@
   ConcurrentHashMap."
   [base]
   {:pre [(map? base)]}
-  (throw (new (NotImplementedException.)))      ;;; (clojure.core.cache/seed (SoftCache. (ConcurrentHashMap.) (ConcurrentHashMap.) (ReferenceQueue.))
+  (throw (System.NotImplementedException.))      ;;; (clojure.core.cache/seed (SoftCache. (ConcurrentHashMap.) (ConcurrentHashMap.) (ReferenceQueue.))
         )                                       ;;;           base)
 		 

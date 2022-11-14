@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+  </PropertyGroup>
+
+	<PropertyGroup>
+		<PackageId>clojure.core.cache</PackageId>
+		<RootNamespace>clojure.core</RootNamespace>
+		<Title>clojure.core.cache</Title>
+		<Product>clojure.core.cache</Product>
+		<AssemblyTitle>clojure.core.cache</AssemblyTitle>
+		<Authors>David Miller</Authors>
+		<Description>Port of the core.cache library to ClojureCLR</Description>
+		<Copyright>Copyright © Rich Hickey, David Miller, ClojureCLR contributors</Copyright>
+		<PackageLicenseExpression>EPL-1.0</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/clojure/clr.core.cache</RepositoryUrl>
+		<Company>ClojureCLR contributors</Company>
+		<PackageTags>Clojure;ClojureCLR</PackageTags>
+		<Version>1.0.225</Version>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<EmbeddedResource CopyToOutputDirectory="Never" Include="..\..\clojure\clojure\core\**\*" />
+	</ItemGroup>
+
+</Project>

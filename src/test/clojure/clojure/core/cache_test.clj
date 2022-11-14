@@ -197,7 +197,7 @@
              (assoc :e 5)
              .cache))))
 
-(defn sleepy [e t] (Thread/sleep t) e)
+(defn sleepy [e t] (System.Threading.Thread/Sleep t) e)                                               ;;; sleep
 
 (deftest test-ttl-cache-ilookup
   (let [five-secs  (+ 5000 (Environment/TickCount))                                  ;;; System/currentTimeMillis
@@ -523,7 +523,7 @@ N non-resident HIR block
 
 (deftest test-cache-iterable
   (let [c (fifo-cache-factory {:a 1 :b 2} :threshold 10)]
-    (is (= #{:a :b} (set (iterator-seq (.iterator (keys c))))))))
+    (is (= #{:a :b} (set (iterator-seq (.GetEnumerator (keys c))))))))                                 ;;; .iterator
 
 (deftest test-fifo-miss-does-not-drop-ccache-39
   (let [c (fifo-cache-factory {:a 1 :b 2} :threshold 2)]
