@@ -9,13 +9,13 @@ See that site for documentation.
 Nuget reference:
 
 ```
-PM> Install-Package clojure.core.cache  -Version 1.0.225
+PM> Install-Package clojure.core.cache  -Version 1.0.226
 ```
 
 Leiningen/Clojars reference:
 
 ```
-[org.clojure.clr/core.cache "1.0.225"]
+[org.clojure.clr/core.cache "1.0.226"]
 ```
 
 ## License
