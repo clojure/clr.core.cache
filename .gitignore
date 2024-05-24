@@ -11,7 +11,7 @@ pom.xml
 .lein-deps-sum
 .lein-failures
 .lein-plugins
-
+.cpcache
 
 #Visual Studio artifacts
 bin/
