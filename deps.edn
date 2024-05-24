@@ -1,0 +1,11 @@
+{:paths ["src/main/clojure"]
+ :deps
+ {io.github.clojure/clr.data.priority-map {:git/tag "v1.2.0" :git/sha "1c22751"}}
+
+ :aliases
+ {:test
+  {:extra-paths ["src/test/clojure"]
+   :extra-deps {io.github.dmiller/test-runner {:git/sha "c055ea13d19c6a9b9632aa2370fcc2215c8043c3"}}
+   ;; :main-opts ["-m" "cognitect.test-runner" "-d" "src/test/clojure"]
+   :exec-fn cognitect.test-runner.api/test
+   :exec-args {:dirs ["src/test/clojure"]}}}}
