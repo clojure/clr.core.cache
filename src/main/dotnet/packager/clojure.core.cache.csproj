@@ -12,12 +12,12 @@
 		<AssemblyTitle>clojure.core.cache</AssemblyTitle>
 		<Authors>David Miller</Authors>
 		<Description>Port of the core.cache library to ClojureCLR</Description>
-		<Copyright>Copyright © Rich Hickey, David Miller, ClojureCLR contributors</Copyright>
+		<Copyright>Copyright © Rich Hickey, ClojureCLR contributors</Copyright>
 		<PackageLicenseExpression>EPL-1.0</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/clojure/clr.core.cache</RepositoryUrl>
 		<Company>ClojureCLR contributors</Company>
 		<PackageTags>Clojure;ClojureCLR</PackageTags>
-		<Version>1.0.226</Version>
+		<Version>1.1.234</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -25,7 +25,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="clojure.data.priority-map" Version="1.1.0" />
+	  <PackageReference Include="clojure.data.priority-map" Version="1.2.0" />
 	</ItemGroup>
 
 
