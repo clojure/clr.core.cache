@@ -8,6 +8,7 @@
 
 (ns clojure.core.cache.wrapped-test
   (:require [clojure.core.cache.wrapped :as c]
+            [clojure.core.cache :as cache]
             [clojure.test :refer [deftest is]]))
 
 (deftest basic-wrapped-test
@@ -40,3 +41,37 @@
           (recur (+ 1 n)))))
     (println "ttl test completed" limit "calls in"
              (- (Environment/TickCount) start) "ms")))                        ;;; System/currentTimeMillis
+			 
+(deftest cache-stampede
+  (let [thread-count 100
+        cache-atom (-> {}
+                       (cache/ttl-cache-factory :ttl 120000)
+                       (cache/lu-cache-factory :threshold 100)
+                       (atom))
+        latch (System.Threading.CountdownEvent. thread-count)              ;;; java.util.concurrent.CountDownLatch.
+        invocations-counter (atom 0)
+        values (atom [])]
+;;;    (dotimes [_ thread-count]
+;;;      (.start (Thread. (fn []                                              
+;;;                         (swap! values conj
+;;;                                (c/lookup-or-miss cache-atom "my-key"
+;;;                                                  (fn [_]
+;;;                                                    (swap! invocations-counter inc)
+;;;                                                    (Thread/sleep 3000)
+;;;                                                    "some value")))
+;;;                         (.countDown latch)))))
+       (dotimes [_ thread-count]
+	     (.Start (System.Threading.Thread. 
+		           (gen-delegate System.Threading.ThreadStart []
+                         (swap! values conj
+                                (c/lookup-or-miss cache-atom "my-key"
+                                                  (fn [_]
+                                                    (swap! invocations-counter inc)
+                                                    (System.Threading.Thread/Sleep 3000)
+                                                    "some value")))
+						  (.Signal latch)))))
+;;;    (.await latch)
+    (.Wait latch)
+    (is (= 1 (deref invocations-counter)))
+    (doseq [v @values]
+      (is (= "some value" v)))))			 
