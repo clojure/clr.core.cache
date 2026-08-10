@@ -7,23 +7,23 @@ See that site for documentation.
 ## Releases
 
 
-The latest stable release is 1.2.0.
+The latest stable release is 1.2.264.
 
 [CLI/`deps.edn`](https://clojure.org/reference/deps_edn) dependency information:
 ```clojure
-io.github.clojure/clr.core.cache {:git/tag "v1.2.263" :git/sha "c1e70d9"}
+io.github.clojure/clr.core.cache {:git/tag "v1.2.264" :git/sha "0b8d901"}
 ```
 
 Nuget reference:
 
 ```
-PM> Install-Package clojure.core.cache  -Version 1.2.263
+PM> Install-Package clojure.core.cache  -Version 1.2.264
 ```
 
 Leiningen/Clojars reference:
 
 ```
-[org.clojure.clr/core.cache "1.2.263"]
+[org.clojure.clr/core.cache "1.2.264"]
 ```
 
 ## License
