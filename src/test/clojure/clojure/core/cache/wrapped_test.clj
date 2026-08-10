@@ -43,43 +43,101 @@
         start (Environment/TickCount)]                                           ;;; System/currentTimeMillis
     (loop [n 0]
       (if-not (c/lookup-or-miss cache :a (constantly 42))
-        (do
-          (is false (str  "Failure on call " n)))
-        (if (< n limit)
-          (recur (+ 1 n)))))
+        (is false (str "Failure on call " n))
+        (when (< n limit)
+          (recur (inc n)))))
     (println "ttl test completed" limit "calls in"
              (- (Environment/TickCount) start) "ms")))                        ;;; System/currentTimeMillis
 			 
 (deftest cache-stampede
-  (let [thread-count 100
+  (let [thread-count 1000
         cache-atom (-> {}
                        (cache/ttl-cache-factory :ttl 120000)
                        (cache/lu-cache-factory :threshold 100)
                        (atom))
         latch (System.Threading.CountdownEvent. thread-count)              ;;; java.util.concurrent.CountDownLatch.
         invocations-counter (atom 0)
-        values (atom [])]
-;;;    (dotimes [_ thread-count]
-;;;      (.start (Thread. (fn []                                              
-;;;                         (swap! values conj
-;;;                                (c/lookup-or-miss cache-atom "my-key"
-;;;                                                  (fn [_]
-;;;                                                    (swap! invocations-counter inc)
-;;;                                                    (Thread/sleep 3000)
-;;;                                                    "some value")))
-;;;                         (.countDown latch)))))
-       (dotimes [_ thread-count]
-	     (.Start (System.Threading.Thread. 
-		           (gen-delegate System.Threading.ThreadStart []
-                         (swap! values conj
-                                (c/lookup-or-miss cache-atom "my-key"
-                                                  (fn [_]
-                                                    (swap! invocations-counter inc)
-                                                    (System.Threading.Thread/Sleep 3000)
-                                                    "some value")))
-						  (.Signal latch)))))
+        freds  (atom [])
+        values (atom [])
+        exes   (atom 0)]
+;;;    (dotimes [n thread-count]
+;;;      (if (<= n (rand-int thread-count))
+;;;        (swap! freds conj
+;;;               (Thread.
+;;;                (fn []
+;;;                  (try
+;;;                    (swap! values conj
+;;;                           (c/lookup-or-miss cache-atom "my-key"
+;;;                                             (fn [_]
+;;;                                               (throw (Exception. "Bad")))))
+;;;                    (catch Exception e
+;;;                      (swap! exes inc)
+;;;                      (is (= "Bad" (.getMessage e)))))
+;;;                  (.countDown latch))))
+;;;        (swap! freds conj
+;;;               (Thread.
+;;;                (fn []
+;;;                  (try
+;;;                    (swap! values conj
+;;;                           (c/lookup-or-miss cache-atom "my-key"
+;;;                                             (fn [_]
+;;;                                               (swap! invocations-counter inc)
+;;;                                               (Thread/sleep 3000)
+;;;                                               "some value")))
+;;;                    (catch Exception _
+;;;                      (is false "Unexpected cached exception")))
+;;;                  (.countDown latch))))))
+;;;
+;;;    (run! #(.start ^Thread %) @freds)
+
+    (dotimes [n thread-count]
+      (if (<= n (rand-int thread-count))
+        (swap! freds conj
+               (System.Threading.Thread.
+		        (gen-delegate System.Threading.ThreadStart []
+                  (try
+                    (swap! values conj
+                           (c/lookup-or-miss cache-atom "my-key"
+                                             (fn [_]
+                                               (throw (Exception. "Bad")))))
+                    (catch Exception e
+                      (swap! exes inc)
+                      (is (= "Bad" (.Message e)))))
+                  (.Signal latch))))
+        (swap! freds conj
+               (System.Threading.Thread.
+		        (gen-delegate System.Threading.ThreadStart []
+                  (try
+                    (swap! values conj
+                           (c/lookup-or-miss cache-atom "my-key"
+                                             (fn [_]
+                                               (swap! invocations-counter inc)
+                                               (System.Threading.Thread/Sleep 3000)
+                                               "some value")))
+                    (catch Exception _
+                      (is false "Unexpected cached exception")))
+                  (.Signal latch))))))
+
+    (run! #(.Start ^System.Threading.Thread %) @freds)
+
 ;;;    (.await latch)
     (.Wait latch)
+    (println "cache-stampede test completed with" @invocations-counter
+             "successful invocation(s)\n\tand" (count @values)
+             "successful lookups in" thread-count
+             "threads with" @exes "exceptions")	
     (is (= 1 (deref invocations-counter)))
+    (is (= (- thread-count @exes) (count @values)))	
     (doseq [v @values]
       (is (= "some value" v)))))			 
+
+(deftest cache-thrown
+  (let [c (c/basic-cache-factory {})]
+    (is (thrown? Exception
+                 (c/lookup-or-miss c :a
+                                   (fn [_]
+                                     (throw (Exception. "bad"))))))
+    ;; cache should not have :a in it
+    (is (= nil (c/lookup c :a)))
+    ;; and the cache should still be empty
+    (is (= 0 (c/size c)))))	  
